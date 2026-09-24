@@ -3,4 +3,13 @@
   <td>{{ row.score }}</td>
   <td class="{% if row.verdict == '通过' %}pass{% else %}fail{% endif %}">{{ row.verdict }}</td>
   <td>{{ row.note }}</td>
+  <td>
+    {% if row.cup_temp is not none %}{{ row.cup_temp }}℃{% else %}<span class="muted">—</span>{% endif %}
+    {% if can_write %}
+    <form class="inline" method="post" action="{{ url_for('correct_cup_temp', cupping_id=row.id) }}">
+      <input name="cup_temp" type="number" step="0.1" placeholder="改正温度" required style="width:7em" />
+      <button>改正</button>
+    </form>
+    {% endif %}
+  </td>
 </tr>

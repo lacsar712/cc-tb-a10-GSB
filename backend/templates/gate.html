@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block body %}
+<h2>杯温门禁</h2>
+
+<section>
+  <h3>当前温区（闭区间）</h3>
+  <p>
+    <strong>[{{ zone.low | round(2) }}, {{ zone.high | round(2) }}]℃</strong>
+    <span class="muted">最后由 {{ zone.updated_by }} 于 {{ zone.updated_at.strftime('%Y-%m-%d %H:%M') }} 设定</span>
+  </p>
+  <p class="muted">温区可随时修改，改动只约束之后的交评与改正；既有记录与历史履历不追溯。交评杯面温度必填，区间外一律拒交。</p>
+  {% if can_write %}
+  <form method="post" action="{{ url_for('update_temp_zone') }}">
+    <input name="low" type="number" step="0.1" value="{{ zone.low }}" required />
+    <span>至</span>
+    <input name="high" type="number" step="0.1" value="{{ zone.high }}" required />
+    <span>℃</span>
+    <button>更新温区</button>
+  </form>
+  {% else %}
+  <p class="muted">只读账号可查看温区与履历，不可修改温区、不可交评。</p>
+  {% endif %}
+</section>
+
+<section>
+  <h3>杯面温度履历（只追加）</h3>
+  <table>
+    <thead>
+      <tr><th>时间</th><th>批次 / 审评</th><th>温度原文</th><th>动作</th><th>操作人</th></tr>
+    </thead>
+    <tbody>
+      {% for e in events %}
+      <tr>
+        <td>{{ e.recorded_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        <td>{% if e.lot %}{{ e.lot }}（#{{ e.cupping_id }}）{% else %}#{{ e.cupping_id }}{% endif %}</td>
+        <td><strong>{{ e.cup_temp }}℃</strong></td>
+        <td>{% if e.action == 'submit' %}交评录入{% else %}事后改正{% endif %}</td>
+        <td>{{ e.recorded_by }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="muted">暂无温度履历</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

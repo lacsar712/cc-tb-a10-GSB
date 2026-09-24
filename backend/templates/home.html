@@ -7,11 +7,13 @@
   <input name="aroma" type="number" step="0.1" min="0" max="10" placeholder="香气" required />
   <input name="taste" type="number" step="0.1" min="0" max="10" placeholder="滋味" required />
   <input name="liquor" type="number" step="0.1" min="0" max="10" placeholder="汤色" required />
+  <input name="cup_temp" type="number" step="0.1" placeholder="杯面温度℃（必填）" required />
   <button>提交</button>
+  <p class="muted">杯面温度必须落在<a href="{{ url_for('temperature_gate') }}">当前温区闭区间</a>内，越界拒交。</p>
 </form>
 {% endif %}
 <table>
-  <thead><tr><th>批次</th><th>加权分</th><th>结论</th><th>说明</th></tr></thead>
+  <thead><tr><th>批次</th><th>加权分</th><th>结论</th><th>说明</th><th>杯面温度</th></tr></thead>
   <tbody id="rows">
     {% for row in rows %}{% include "_row.html" %}{% endfor %}
   </tbody>
