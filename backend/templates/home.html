@@ -7,11 +7,17 @@
   <input name="aroma" type="number" step="0.1" min="0" max="10" placeholder="香气" required />
   <input name="taste" type="number" step="0.1" min="0" max="10" placeholder="滋味" required />
   <input name="liquor" type="number" step="0.1" min="0" max="10" placeholder="汤色" required />
+  <input name="temperature" type="number" step="0.1" placeholder="杯面温度℃" required />
   <button>提交</button>
+  <p class="hint">杯面温度为必填，须落在当前温区闭区间内；区间外拒交。
+    <a href="{{ url_for('temperature_page') }}">查看/修改温区</a></p>
 </form>
 {% endif %}
 <table>
-  <thead><tr><th>批次</th><th>加权分</th><th>结论</th><th>说明</th></tr></thead>
+  <thead><tr>
+    <th>批次</th><th>杯面温度</th><th>加权分</th><th>结论</th><th>说明</th>
+    {% if can_write %}<th>改正温度</th>{% endif %}
+  </tr></thead>
   <tbody id="rows">
     {% for row in rows %}{% include "_row.html" %}{% endfor %}
   </tbody>

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>杯温门禁</h1>
+
+<section>
+  <h2>当前温区（闭区间）</h2>
+  <p class="range">{{ gate.low | tempfmt }}℃ — {{ gate.high | tempfmt }}℃</p>
+  <p class="hint">交评时杯面温度为必填，且必须落在该闭区间内；区间外拒交并提示当前温区。
+    温区修改后只约束之后的提交，不溯及既往。</p>
+  {% if can_write %}
+  <form method="post" action="{{ url_for('update_gate') }}">
+    <label>下限 <input name="low" type="number" step="0.1" value="{{ gate.low | tempfmt }}" required /></label>
+    <label>上限 <input name="high" type="number" step="0.1" value="{{ gate.high | tempfmt }}" required /></label>
+    <button>修改温区</button>
+  </form>
+  {% else %}
+  <p class="hint">只读账号可查看温区与履历，不可修改温区、不可交评。</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>温度履历（只追加，不可改写）</h2>
+  <table>
+    <thead><tr>
+      <th>#</th><th>批次</th><th>动作</th><th>温度原文</th><th>操作人</th><th>时间</th>
+    </tr></thead>
+    <tbody>
+      {% for h in history %}
+      <tr>
+        <td>{{ h.cupping_id }}</td>
+        <td>{{ h.lot }}</td>
+        <td>{{ h.action }}</td>
+        <td>{{ h.temperature_raw }}℃</td>
+        <td>{{ h.changed_by }}</td>
+        <td>{{ h.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6">暂无履历</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<p><a href="{{ url_for('home') }}">返回审评台</a></p>
+{% endblock %}

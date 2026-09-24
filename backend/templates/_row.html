@@ -1,6 +1,15 @@
 <tr>
   <td>{{ row.lot }}</td>
+  <td>{{ row.temperature | tempfmt }}℃</td>
   <td>{{ row.score }}</td>
   <td class="{% if row.verdict == '通过' %}pass{% else %}fail{% endif %}">{{ row.verdict }}</td>
   <td>{{ row.note }}</td>
+  {% if session.role == 'writer' %}
+  <td>
+    <form method="post" action="{{ url_for('correct_temperature', cupping_id=row.id) }}" class="inline">
+      <input name="temperature" type="number" step="0.1" placeholder="改正温度℃" required />
+      <button>改正</button>
+    </form>
+  </td>
+  {% endif %}
 </tr>
